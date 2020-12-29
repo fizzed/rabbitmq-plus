@@ -10,6 +10,21 @@ RabbitMQ Plus by Fizzed
 Utilities and framework integrations for Java and RabbitMQ. Includes an integration
 of [RabbitMQ](https://www.rabbitmq.com/) with the [Ninja Framework](https://github.com/ninjaframework/ninja).
 
+## Connection Pool and Other Helpers
+
+### Setup
+
+```xml
+<dependency>
+    <groupId>com.fizzed</groupId>
+    <artifactId>rabbitmq-util</artifactId>
+    <version>0.0.5</version>
+</dependency>
+```
+
+Browse the utilities in https://github.com/fizzed/rabbitmq-plus/tree/master/rabbitmq-util/src/main/java/com/fizzed/rabbitmq/util
+
+
 ## Ninja Framework
 
 Ninja Framework module for RabbitMQ. Will help provide connectivity to RabbitMQ,
