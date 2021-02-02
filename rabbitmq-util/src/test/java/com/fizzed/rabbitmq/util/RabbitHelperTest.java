@@ -1,6 +1,5 @@
 package com.fizzed.rabbitmq.util;
 
-import com.fizzed.rabbitmq.util.RabbitHelper;
 import com.rabbitmq.client.Channel;
 import java.util.UUID;
 import static org.hamcrest.CoreMatchers.is;

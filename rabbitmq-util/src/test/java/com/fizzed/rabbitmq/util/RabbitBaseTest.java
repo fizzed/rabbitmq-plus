@@ -1,7 +1,9 @@
 package com.fizzed.rabbitmq.util;
 
+import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
 
@@ -29,6 +31,18 @@ public class RabbitBaseTest {
             catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+    
+    public void createQueueIfNotExists(
+            String queueName) throws IOException {
+        
+        final Channel channel = this.connection.createChannel();
+        try {
+            channel.queueDeclare(queueName, false, false, false, null);
+        }
+        finally {
+            RabbitHelper.closeQuietly(channel);
         }
     }
     

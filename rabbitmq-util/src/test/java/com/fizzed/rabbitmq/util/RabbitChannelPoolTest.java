@@ -1,7 +1,5 @@
 package com.fizzed.rabbitmq.util;
 
-import com.fizzed.rabbitmq.util.RabbitChannelPool;
-import com.fizzed.rabbitmq.util.RabbitPooledChannel;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
