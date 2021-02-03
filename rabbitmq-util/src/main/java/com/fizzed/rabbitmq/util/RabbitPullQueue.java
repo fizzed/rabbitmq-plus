@@ -243,5 +243,4 @@ public class RabbitPullQueue<E> {
         
     }
 
-    
 }

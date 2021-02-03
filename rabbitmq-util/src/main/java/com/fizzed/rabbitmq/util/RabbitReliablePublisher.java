@@ -95,7 +95,7 @@ public class RabbitReliablePublisher {
         
         @Override
         public void handleAck(long deliveryTag, boolean multiple) throws IOException {
-            log.debug("Message acked: deliveryTag={}", deliveryTag);
+            log.trace("Message acked: deliveryTag={}", deliveryTag);
             lock.lock();
             try {
                 final DefaultRabbitPublishFuture future = removeFutureByDeliveryTag(deliveryTag);
@@ -109,7 +109,7 @@ public class RabbitReliablePublisher {
 
         @Override
         public void handleNack(long deliveryTag, boolean multiple) throws IOException {
-            log.error("Message nacked: deliveryTag={}", deliveryTag);
+            log.warn("Message nacked: deliveryTag={}", deliveryTag);
             lock.lock();
             try {
                 final DefaultRabbitPublishFuture future = removeFutureByDeliveryTag(deliveryTag);
@@ -124,7 +124,7 @@ public class RabbitReliablePublisher {
         @Override
         public void handleReturn(int replyCode, String replyText, String exchange, String routingKey, AMQP.BasicProperties properties, byte[] body) throws IOException {
             final String messageId = properties != null ? properties.getMessageId() : null;
-            log.error("Message returned: replyCode={}, replyText={}, messageId={}", replyCode, replyText, messageId);
+            log.warn("Message returned: replyCode={}, replyText={}, messageId={}", replyCode, replyText, messageId);
             lock.lock();
             try {
                 final DefaultRabbitPublishFuture future = removeFutureByMessageId(messageId);
@@ -139,7 +139,7 @@ public class RabbitReliablePublisher {
         @Override
         public void shutdownCompleted(ShutdownSignalException cause) {
             // com.rabbitmq.client.ShutdownSignalException: channel error; protocol method: #method<channel.close>(reply-code=404, reply-text=NOT_FOUND - no exchange 'ExchangeDoesNotExist' in vhost '/', class-id=60, method-id=40)
-            log.error("Channel shutdown: {}", cause.getMessage());
+            log.warn("Channel shutdown: {}", cause.getMessage());
             lock.lock();
             try {
                 // cancel all pending futures
@@ -170,8 +170,8 @@ public class RabbitReliablePublisher {
     private void init() throws IOException {
         if (this.channel == null || !this.initialized) {
             if (this.channel == null) {
-                log.info("Creating new channel...");
                 this.channel = this.connection.createChannel();
+                log.info("Created channel {} for reliable publishing", this.channel.getChannelNumber());
             }
 
             this.channel.confirmSelect();
@@ -213,7 +213,7 @@ public class RabbitReliablePublisher {
                 return this.publishWithFuture(attempt, timestamp, exchangeName, routingKey, mandatory, properties, messageBytes);
             }
             catch (AlreadyClosedException e) {
-                log.error("Unable to cleanly publish message to channel (will try to re-establish channel): {}", e.getMessage());
+                log.warn("Unable to cleanly publish message to channel (will try to re-establish channel): {}", e.getMessage());
                 // try to re-establish connection...
                 this.reinit();
                 attempt++;
