@@ -11,15 +11,14 @@ public class RabbitReliablePublisherTest extends RabbitBaseTest {
     static private final String QUEUE_NAME1 = "ReliablePublisherTestQueue1";
 
     @Before
-    @Override
     public void before() throws Exception {
-        super.before();
         this.createQueueIfNotExists(QUEUE_NAME1);
+        
     }
     
     @Test
     public void sendToNonExistentExchange() throws Exception {
-        final RabbitReliablePublisher sender = new RabbitReliablePublisher(this.connection);
+        final RabbitReliablePublisher sender = new RabbitReliablePublisher(connection);
 
         final AMQP.BasicProperties properties = new AMQP.BasicProperties.Builder()
             .messageId(UUID.randomUUID().toString())
@@ -41,7 +40,7 @@ public class RabbitReliablePublisherTest extends RabbitBaseTest {
     
     @Test
     public void sendToNonExistentExchangeThenCorrectExchange() throws Exception {
-        final RabbitReliablePublisher sender = new RabbitReliablePublisher(this.connection);
+        final RabbitReliablePublisher sender = new RabbitReliablePublisher(connection);
 
         final AMQP.BasicProperties properties1 = new AMQP.BasicProperties.Builder()
             .messageId(UUID.randomUUID().toString())
@@ -73,7 +72,7 @@ public class RabbitReliablePublisherTest extends RabbitBaseTest {
     
     @Test
     public void sendToNonExistentQueue() throws Exception {
-        final RabbitReliablePublisher sender = new RabbitReliablePublisher(this.connection);
+        final RabbitReliablePublisher sender = new RabbitReliablePublisher(connection);
 
         final AMQP.BasicProperties properties = new AMQP.BasicProperties.Builder()
             .messageId(UUID.randomUUID().toString())

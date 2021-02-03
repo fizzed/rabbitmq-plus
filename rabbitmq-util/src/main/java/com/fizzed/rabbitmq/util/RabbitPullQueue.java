@@ -6,6 +6,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.Envelope;
 import com.rabbitmq.client.ShutdownSignalException;
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -14,7 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RabbitPullQueue<E> {
+public class RabbitPullQueue<E> implements Closeable {
     static private final Logger log = LoggerFactory.getLogger(RabbitPullQueue.class);
     
     private final String routingKey;
@@ -55,6 +56,17 @@ public class RabbitPullQueue<E> {
 
     public int getWaiterCount() {
         return this.waiterCount;
+    }
+    
+    @Override
+    public void close() throws IOException {
+        this.stop();
+    }
+    
+    public void stop() {
+        this.nack(true);
+        RabbitHelper.closeQuietly(this.channel);
+        this.channel = null;
     }
     
     public RabbitMessage pop(long timeout, TimeUnit tu) throws IOException, InterruptedException, TimeoutException {
@@ -198,9 +210,10 @@ public class RabbitPullQueue<E> {
 
             final RabbitPullQueue _this = RabbitPullQueue.this;
             final long deliveryTag = envelope.getDeliveryTag();
+            final String messageId = properties != null ? properties.getMessageId() : null;
             final int bodySize = body != null ? body.length : 0;
             
-            log.trace("Received message {} ({} bytes)", deliveryTag, bodySize);
+            log.trace("Received message id={}, deliveryTag={} ({} bytes)", messageId, deliveryTag, bodySize);
 
             _this.lock.lock();
             try {
