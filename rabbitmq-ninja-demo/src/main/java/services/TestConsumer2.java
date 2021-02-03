@@ -29,7 +29,7 @@ public class TestConsumer2 {
     
     @Start
     public void start() throws IOException {
-        this.queue = new RabbitPullQueue("test.request", this.connectionProvider.get());
+        this.queue = new RabbitPullQueue(this.connectionProvider.get(), "test.request");
         this.executor = Executors.newSingleThreadExecutor();
         this.executor.submit(() -> {
             try {

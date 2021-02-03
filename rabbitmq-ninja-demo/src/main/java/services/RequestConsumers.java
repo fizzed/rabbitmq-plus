@@ -52,7 +52,7 @@ public class RequestConsumers extends WorkerService<RequestConsumer> {
         NinjaWorkerService.configure("demo.request_consumer", this.ninjaProperties, this);
         
         if (this.queue == null) {
-            this.queue = new RabbitPullQueue<>("test.request", this.connectionProvider.get());
+            this.queue = new RabbitPullQueue<>(this.connectionProvider.get(), "test.request");
         }
         
         super.start();
