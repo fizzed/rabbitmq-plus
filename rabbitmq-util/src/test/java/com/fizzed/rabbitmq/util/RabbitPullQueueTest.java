@@ -42,7 +42,7 @@ public class RabbitPullQueueTest extends RabbitBaseTest {
     
     @Test
     public void pop() throws Exception {
-        try (RabbitPullQueue queue = new RabbitPullQueue(QUEUE_NAME1, connection)) {
+        try (RabbitPullQueue queue = new RabbitPullQueue(connection, QUEUE_NAME1)) {
 
             this.publish(QUEUE_NAME1, "Hello 1");
 
@@ -55,7 +55,7 @@ public class RabbitPullQueueTest extends RabbitBaseTest {
     
     @Test
     public void popArriveAfterWaiting() throws Exception {
-        try (RabbitPullQueue queue = new RabbitPullQueue(QUEUE_NAME1, connection)) {
+        try (RabbitPullQueue queue = new RabbitPullQueue(connection, QUEUE_NAME1)) {
 
             // schedule a publish in 1 second
             final Thread thread = new Thread(() -> {
@@ -78,7 +78,7 @@ public class RabbitPullQueueTest extends RabbitBaseTest {
     
     @Test
     public void popTimeout() throws Exception {
-        try (RabbitPullQueue queue = new RabbitPullQueue(QUEUE_NAME1, connection)) {
+        try (RabbitPullQueue queue = new RabbitPullQueue(connection, QUEUE_NAME1)) {
 
             try {
                 queue.pop(1, TimeUnit.SECONDS);
@@ -92,7 +92,7 @@ public class RabbitPullQueueTest extends RabbitBaseTest {
     
     @Test
     public void popNoWaitingDoesNotLoseMessages() throws Exception {
-        try (RabbitPullQueue queue1 = new RabbitPullQueue(QUEUE_NAME1, connection)) {
+        try (RabbitPullQueue queue1 = new RabbitPullQueue(connection, QUEUE_NAME1)) {
             
             queue1.setPendingTimeout(1, TimeUnit.SECONDS);
 

@@ -33,11 +33,11 @@ public class RabbitPullQueue<E> implements Closeable {
     private volatile int waiterCount;
     
     public RabbitPullQueue(
-            String routingKey,
-            Connection connection) {
+            Connection connection,
+            String routingKey) {
         
-        this.routingKey = routingKey;
         this.connection = connection;
+        this.routingKey = routingKey;
         this.lock = new ReentrantLock();
         this.messageReceivedCondition = this.lock.newCondition();
         this.messagePoppedCondition = this.lock.newCondition();
